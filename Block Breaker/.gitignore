@@ -51,6 +51,10 @@ ExportedObj/
 # Unity3D generated file on crash reports
 sysinfo.txt
 
+
+# Directories
+Block Breaker/.gitignore
+
 # Builds
 *.apk
 *.unitypackage
