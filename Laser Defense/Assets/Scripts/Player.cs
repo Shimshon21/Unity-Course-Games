@@ -1,11 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] float moveSpeed = 10f;
+    [SerializeField] float projectileSpeed = 10f;
+    [SerializeField] GameObject laserPrefab;
 
     float padding = 1f;
 
@@ -35,6 +34,17 @@ public class Player : MonoBehaviour
     void Update()
     {
         Move();
+        FireLaser();
+    }
+
+    private void FireLaser()
+    {
+        if(Input.GetButtonDown("Fire1"))
+        {
+            GameObject laser =  Instantiate(laserPrefab,transform.position,Quaternion.identity) as GameObject;
+
+            laser.GetComponent<Rigidbody2D>().velocity = new Vector2(0, projectileSpeed);
+        }
     }
 
 
