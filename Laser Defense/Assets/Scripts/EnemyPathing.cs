@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class EnemyPathing : MonoBehaviour
 {
-    //
+    // Wave configuration
     [SerializeField] WaveConfig waveConfig;
 
     //Type transform to store the positions itself of the paths.
     [SerializeField] List<Transform> waypoints;
-
-    //Speed of movement.
-    [SerializeField] float moveSpeed = 2f;
 
     //Index of the waypoint.
     int waypointIndex = 0;
@@ -24,6 +21,9 @@ public class EnemyPathing : MonoBehaviour
         waypoints = waveConfig.GetWaypoints();
 
         transform.position = waypoints[waypointIndex].transform.position;
+
+        foreach(var waypoint in waypoints)
+            Debug.Log(waypoint.position);
     }
 
     // Update is called once per frame
@@ -32,8 +32,12 @@ public class EnemyPathing : MonoBehaviour
         Move();
     }
 
-
-
+    //
+    public void setWaveConfig(WaveConfig waveConfig)
+    {
+        this.waveConfig = waveConfig;
+    }
+   
     // Move the enemy according a specific path.
     private void Move()
     {
@@ -43,7 +47,7 @@ public class EnemyPathing : MonoBehaviour
             var targetPosition = waypoints[waypointIndex].transform.position;
 
             // Movment speed
-            var movementThisFrame = moveSpeed * Time.deltaTime;
+            var movementThisFrame = waveConfig.GetMoveSpeed() * Time.deltaTime;
 
             // Update new position by 'MoveTowards'
             transform.position = Vector2.MoveTowards(transform.position, targetPosition, movementThisFrame);
