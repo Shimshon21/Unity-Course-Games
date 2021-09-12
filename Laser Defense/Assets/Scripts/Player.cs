@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class Player : MonoBehaviour
     [Header("Player")]
     [SerializeField] float moveSpeed = 10f;
     [SerializeField] int health = 200;
-    [SerializeField][Range(0,1)] float deathSoundVolume = 1f;
+    [SerializeField] [Range(0, 1)] float deathSoundVolume = 1f;
     [SerializeField] AudioClip deathSFX;
 
     [Header("Projectile")]
@@ -16,16 +17,17 @@ public class Player : MonoBehaviour
     [SerializeField] float projectileFiringPeriod = 3f;
     [SerializeField] float projectileSoundVolume = 1f;
     [SerializeField] GameObject laserPrefab;
-    [SerializeField] AudioClip laserSFX; 
+    [SerializeField] AudioClip laserSFX;
 
     Coroutine firingCoroutine;
 
+    const float delayInSeconds = 2f;
 
     //int count = 0;
 
     float padding = 1f;
 
-    float xMax,xMin,yMax,yMin;
+    float xMax, xMin, yMax, yMin;
 
 
     // Start is called before the first frame update
@@ -39,7 +41,7 @@ public class Player : MonoBehaviour
         Camera gameCamera = Camera.main;
 
         xMin = gameCamera.ViewportToWorldPoint
-            (new Vector3(0, 0, 0)).x+ padding;
+            (new Vector3(0, 0, 0)).x + padding;
         xMax = gameCamera.ViewportToWorldPoint
             (new Vector3(1, 0, 0)).x - padding;
 
@@ -60,14 +62,14 @@ public class Player : MonoBehaviour
 
     private void FireLaser()
     {
-        if(Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1"))
         {
             firingCoroutine = StartCoroutine(FireContinuously());
             AudioSource.PlayClipAtPoint
-                (laserSFX, Camera.main.transform.position,projectileSoundVolume);
+                (laserSFX, Camera.main.transform.position, projectileSoundVolume);
         }
 
-        if(Input.GetButtonUp("Fire1"))
+        if (Input.GetButtonUp("Fire1"))
         {
             StopCoroutine(firingCoroutine);
         }
@@ -95,20 +97,20 @@ public class Player : MonoBehaviour
     private void Move()
     {
         //Movment direction speed.
-        var deltaX = Input.GetAxis("Horizontal")* 
+        var deltaX = Input.GetAxis("Horizontal") *
             Time.deltaTime * moveSpeed;
-        var deltaY = Input.GetAxis("Vertical") * 
+        var deltaY = Input.GetAxis("Vertical") *
             Time.deltaTime * moveSpeed;
 
         //Set new movment positions.
         var newXPos = Mathf.Clamp
-            (transform.position.x + deltaX,xMin,xMax);
+            (transform.position.x + deltaX, xMin, xMax);
         var newYPos = Mathf.Clamp
             (transform.position.y + deltaY, yMin, yMax);
 
         //Apply the new positions.
         transform.position = new Vector2(newXPos, newYPos);
-        
+
     }
 
 
@@ -133,8 +135,17 @@ public class Player : MonoBehaviour
         if (health <= 0)
         {
             AudioSource.PlayClipAtPoint
-                (deathSFX, Camera.main.transform.position,deathSoundVolume);
+                (deathSFX, Camera.main.transform.position, deathSoundVolume);
             Destroy(gameObject);
+
+            FindObjectOfType<SceneLoader>().LoadGameoverScene();
         }
     }
+
+
+    public int GetHealth()
+    {
+        return health;
+    }
+
 }

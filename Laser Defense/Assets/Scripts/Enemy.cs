@@ -96,6 +96,8 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        FindObjectOfType<GameSession>().AddScore();
+
         Destroy(gameObject);
 
         GameObject explosion = Instantiate
