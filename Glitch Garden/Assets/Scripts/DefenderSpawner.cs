@@ -5,16 +5,19 @@ using UnityEngine;
 
 public class DefenderSpawner : MonoBehaviour
 {
-    [SerializeField] GameObject defender;
+    Defender defender;
 
 
     private void OnMouseDown()
     {
-
-
-        SpawnDefender(GetSquareClicked());
+        AttemptToPlaceDefenderAt(GetSquareClicked());
     }
 
+
+    public void SetDefender(Defender selectedDefender)
+    {
+        defender = selectedDefender;
+    }
 
 
     private Vector2 GetSquareClicked()
@@ -24,8 +27,6 @@ public class DefenderSpawner : MonoBehaviour
         Vector2 gridPos = SnapToGrid(worldPos);
 
         return gridPos;
-    
-    
     }
 
 
@@ -38,8 +39,43 @@ public class DefenderSpawner : MonoBehaviour
     }
 
 
+    private void AttemptToPlaceDefenderAt(Vector2 gridPos)
+    {
+        var starDisplay = FindObjectOfType<StarDisplay>();
+
+        int defenderCost = defender.GetStarCost();
+
+        if(starDisplay.IsEnoughStars(defenderCost) && IsNotOccupiedArea(gridPos))
+        {
+            SpawnDefender(gridPos);
+
+            starDisplay.SpendStars(defenderCost);
+        }
+
+    }
+
+    private bool IsNotOccupiedArea(Vector2 gridPos)
+    {
+        var defenders = FindObjectsOfType<Defender>();
+
+        foreach(var defender in defenders)
+        {
+            if(defender.transform.position.x == gridPos.x &&
+                defender.transform.position.y == gridPos.y)
+            {
+                Debug.Log("Found");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void SpawnDefender(Vector2 spawnPostion)
     {
-        GameObject newDefender = Instantiate(defender, spawnPostion, Quaternion.identity) as GameObject;
+        if (defender)
+        {
+            Defender newDefender = Instantiate(defender, spawnPostion, Quaternion.identity) as Defender;
+        }
     }
 }

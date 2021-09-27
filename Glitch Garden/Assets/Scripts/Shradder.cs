@@ -3,15 +3,15 @@ using UnityEngine;
 public class Shradder : MonoBehaviour
 {
 
-    private void Start()
-    {
-        Debug.Log("Shradder start");
-    }
-
+    [SerializeField] int enemiesHitPoints = 10;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Debug.Log("Collision" + collision.gameObject);
+        if(collision.GetComponent<Attacker>())
+        {
+            FindObjectOfType<PlayerHealthDisplay>().DecreaseHealth(enemiesHitPoints);
+        }
+
         Destroy(collision.gameObject);
     }
 

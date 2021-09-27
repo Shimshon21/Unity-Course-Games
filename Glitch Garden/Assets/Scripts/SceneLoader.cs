@@ -12,7 +12,8 @@ public class SceneLoader : MonoBehaviour
     const int 
         SPLASH_SCREEN = 0,
         START_SCREEN = 1,
-        GAME_SCREEN = 2;
+        GAME_SCREEN = 2,
+        GAMEOVER_SCREEN = 3;
 
     int currentSceneIndex = SPLASH_SCREEN;
 
@@ -29,27 +30,55 @@ public class SceneLoader : MonoBehaviour
     
     }
 
+
+    private void Update()
+    {
+        var playrHealth = FindObjectOfType<PlayerHealthDisplay>();
+
+        if (playrHealth)
+        {
+            if (playrHealth.IsPlayerLost())
+            {
+                LoadGameOverScene();
+            }
+        }
+
+    }
+
     private IEnumerator WaitForTime()
     {
         yield return new WaitForSeconds(timeToWait);
         LoadNextScreen();
     }
 
-    private void LoadNextScreen()
+
+    public void LoadNextScreen()
     {
         currentSceneIndex++;
         SceneManager.LoadScene(currentSceneIndex);
     }
 
-    private void LoadStartScene()
+
+    public void LoadStartScene()
     {
         SceneManager.LoadScene(START_SCREEN);
     }
 
 
-    private void LoadGameScene()
+    public void LoadGameScene()
     {
         SceneManager.LoadScene(GAME_SCREEN);
     }
 
+
+    public void LoadGameOverScene()
+    {
+        SceneManager.LoadScene(GAMEOVER_SCREEN);
+    }
+
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }

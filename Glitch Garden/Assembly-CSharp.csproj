@@ -60,15 +60,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Shradder.cs" />
-    <Compile Include="Assets\Scripts\Attacker.cs" />
+    <Compile Include="Assets\Scripts\Health.cs" />
+    <Compile Include="Assets\Scripts\StarDisplay.cs" />
+    <Compile Include="Assets\Scripts\GameTimer.cs" />
+    <Compile Include="Assets\Scripts\Attacker\Attacker.cs" />
+    <Compile Include="Assets\Scripts\Defender.cs" />
     <Compile Include="Assets\Scripts\DamageDealer.cs" />
+    <Compile Include="Assets\Scripts\DefenderButton.cs" />
+    <Compile Include="Assets\Scripts\LevelController.cs" />
     <Compile Include="Assets\Scripts\Shooter.cs" />
+    <Compile Include="Assets\Scripts\Attacker\Fox.cs" />
     <Compile Include="Assets\Scripts\Projectile.cs" />
     <Compile Include="Assets\Scripts\SceneLoader.cs" />
-    <Compile Include="Assets\Scripts\Spawner.cs" />
-    <Compile Include="Assets\Scripts\Health.cs" />
-    <Compile Include="Assets\GameArea.cs" />
+    <Compile Include="Assets\Scripts\Attacker\Lizard.cs" />
+    <Compile Include="Assets\Scripts\GameArea.cs" />
+    <Compile Include="Assets\Scripts\Attacker\AttackerSpawner.cs" />
+    <Compile Include="Assets\Scripts\Gravestone.cs" />
     <Compile Include="Assets\Scripts\DefenderSpawner.cs" />
+    <Compile Include="Assets\Scripts\PlayerHealthDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

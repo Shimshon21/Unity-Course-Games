@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,11 +11,18 @@ public class Projectile : MonoBehaviour
         speedOfSpin = 1f,
         damage = 100f;
 
+
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector2.right * speed * Time.deltaTime,Space.World);
-       
+        ShootMovment();
+    }
+
+
+    private void ShootMovment()
+    {
+        transform.Translate(Vector2.right * speed * Time.deltaTime, Space.World);
+
         transform.Rotate(0, 0, -speedOfSpin);
     }
 
@@ -31,5 +39,6 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
 
 }
