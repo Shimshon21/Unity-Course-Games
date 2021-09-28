@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class DefenderButton : MonoBehaviour
@@ -7,7 +6,17 @@ public class DefenderButton : MonoBehaviour
 
     [SerializeField] Defender defenderPrefab;
 
+
+
     bool selected = false;
+
+    private void Start()
+    {
+        if(defenderPrefab)
+            SetPriceText();
+
+    }
+
 
     private void OnMouseDown()
     {
@@ -20,6 +29,12 @@ public class DefenderButton : MonoBehaviour
         FindObjectOfType<DefenderSpawner>().SetDefender(defenderPrefab);
 
         gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+
     }
 
+
+    private void SetPriceText()
+    {
+        GetComponentInChildren<Text>().text = defenderPrefab.GetStarCost().ToString();
+    }
 }

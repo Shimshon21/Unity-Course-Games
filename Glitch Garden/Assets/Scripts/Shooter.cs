@@ -11,11 +11,17 @@ public class Shooter : MonoBehaviour
 
     Animator animator;
 
+    const string PROJECTILE_PARENT_NAME = "Projectiles";
+
+    GameObject projectileParent;
+
     private void Start()
     {
         SetLaneSpawner();
 
         animator = GetComponent<Animator>();
+
+        CreateDefenderParent();
     }
 
 
@@ -60,7 +66,19 @@ public class Shooter : MonoBehaviour
     public void Shoot()
     {
         var projectile = Instantiate(projectilePrefab, gun.transform.position, transform.rotation);
+
+        projectile.transform.parent = projectileParent.transform;
     }
 
+
+    private void CreateDefenderParent()
+    {
+        projectileParent = GameObject.Find(PROJECTILE_PARENT_NAME);
+        if (!projectileParent)
+        {
+            projectileParent = new GameObject(PROJECTILE_PARENT_NAME);
+
+        }
+    }
 
 }

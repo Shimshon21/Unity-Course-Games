@@ -78,6 +78,9 @@
     <Compile Include="Assets\Scripts\Gravestone.cs" />
     <Compile Include="Assets\Scripts\DefenderSpawner.cs" />
     <Compile Include="Assets\Scripts\PlayerHealthDisplay.cs" />
+    <Compile Include="Assets\Scripts\PlayerPrefController.cs" />
+    <Compile Include="Assets\MusicPlayer.cs" />
+    <Compile Include="Assets\OptionsController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

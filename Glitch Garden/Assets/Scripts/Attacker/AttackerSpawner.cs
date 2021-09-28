@@ -6,6 +6,7 @@ public class AttackerSpawner : MonoBehaviour
     [SerializeField] float minSpawnTime = 1f;
     [SerializeField] float maxSpawnTime = 5f;
     [SerializeField] Attacker[] enemiesPrefab;
+
     bool spawn = true;
 
     IEnumerator Start()
@@ -17,6 +18,7 @@ public class AttackerSpawner : MonoBehaviour
             SpawnAttacker();
         }
     }
+
 
     private void SpawnAttacker()
     {

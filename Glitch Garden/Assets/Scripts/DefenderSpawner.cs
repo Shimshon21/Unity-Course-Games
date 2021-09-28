@@ -6,7 +6,14 @@ using UnityEngine;
 public class DefenderSpawner : MonoBehaviour
 {
     Defender defender;
+    GameObject defenderParent;
+    const string DEFENDER_PARENT_NAME = "Defenders";
 
+
+    private void Start()
+    {
+        CreateDefenderParent();
+    }
 
     private void OnMouseDown()
     {
@@ -43,13 +50,18 @@ public class DefenderSpawner : MonoBehaviour
     {
         var starDisplay = FindObjectOfType<StarDisplay>();
 
-        int defenderCost = defender.GetStarCost();
-
-        if(starDisplay.IsEnoughStars(defenderCost) && IsNotOccupiedArea(gridPos))
+        if (defender)
         {
-            SpawnDefender(gridPos);
 
-            starDisplay.SpendStars(defenderCost);
+            int defenderCost = defender.GetStarCost();
+
+            if (starDisplay.IsEnoughStars(defenderCost) && IsNotOccupiedArea(gridPos))
+            {
+                SpawnDefender(gridPos);
+
+                starDisplay.SpendStars(defenderCost);
+            }
+
         }
 
     }
@@ -76,6 +88,17 @@ public class DefenderSpawner : MonoBehaviour
         if (defender)
         {
             Defender newDefender = Instantiate(defender, spawnPostion, Quaternion.identity) as Defender;
+            newDefender.transform.parent = defenderParent.transform;
+        }
+    }
+
+    private void CreateDefenderParent()
+    {
+        defenderParent = GameObject.Find(DEFENDER_PARENT_NAME);
+        if(!defenderParent)
+        {
+            defenderParent = new GameObject(DEFENDER_PARENT_NAME);
+
         }
     }
 }

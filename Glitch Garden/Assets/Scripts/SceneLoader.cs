@@ -9,11 +9,12 @@ public class SceneLoader : MonoBehaviour
 
     [SerializeField] int timeToWait = 4;
 
-    const int 
+    const int
         SPLASH_SCREEN = 0,
         START_SCREEN = 1,
-        GAME_SCREEN = 2,
-        GAMEOVER_SCREEN = 3;
+        OPTIONS_SCREEN = 2,
+        GAME_SCREEN = 3,
+        GAMEOVER_SCREEN = 4;
 
     int currentSceneIndex = SPLASH_SCREEN;
 
@@ -31,41 +32,31 @@ public class SceneLoader : MonoBehaviour
     }
 
 
-    private void Update()
-    {
-        var playrHealth = FindObjectOfType<PlayerHealthDisplay>();
-
-        if (playrHealth)
-        {
-            if (playrHealth.IsPlayerLost())
-            {
-                LoadGameOverScene();
-            }
-        }
-
-    }
+    private void Update(){}
 
     private IEnumerator WaitForTime()
     {
         yield return new WaitForSeconds(timeToWait);
-        LoadNextScreen();
+        LoadNextScene();
     }
 
 
-    public void LoadNextScreen()
+    public void LoadNextScene()
     {
         currentSceneIndex++;
         SceneManager.LoadScene(currentSceneIndex);
     }
 
 
-    public void LoadStartScene()
+    public void LoadMenuScene()
     {
         SceneManager.LoadScene(START_SCREEN);
+
+        Time.timeScale = 1;
     }
 
 
-    public void LoadGameScene()
+    public void LoadLevel1Scene()
     {
         SceneManager.LoadScene(GAME_SCREEN);
     }
@@ -74,6 +65,22 @@ public class SceneLoader : MonoBehaviour
     public void LoadGameOverScene()
     {
         SceneManager.LoadScene(GAMEOVER_SCREEN);
+    }
+
+
+    public void RestartLevel()
+    {
+        currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        SceneManager.LoadScene(currentSceneIndex);
+
+        Time.timeScale = 1;
+    }
+
+
+    public void LoadOptionsScene()
+    {
+       SceneManager.LoadScene(OPTIONS_SCREEN);
     }
 
 

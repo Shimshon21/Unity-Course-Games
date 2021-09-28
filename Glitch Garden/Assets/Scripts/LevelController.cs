@@ -7,6 +7,8 @@ public class LevelController : MonoBehaviour
 {
     [SerializeField] GameObject winLabel;
 
+    [SerializeField] GameObject loseLabel;
+
     [SerializeField] int AttackersAlive = 0;
 
     AttackerSpawner[] attackerSpawners;
@@ -39,19 +41,39 @@ public class LevelController : MonoBehaviour
     }
 
     //
-    private void Start(){ }
+    private void Start(){
+        if(winLabel && loseLabel)
+        {
+            loseLabel.SetActive(false);
+
+            winLabel.SetActive(false);
+        }
+    
+    }
 
     //
     private void Update(){}
 
+    public void HandleLoseCondition()
+    {
+        loseLabel.SetActive(true);
+
+        Time.timeScale = 0;
+    }
+
+
     public void AttackerSpawned(){ AttackersAlive++; }
 
+
     public void AttackerKilled() {
+
+        bool isPlayerLost = FindObjectOfType<PlayerHealthDisplay>().IsPlayerLost();
+
         AttackersAlive--; 
 
-        if(AttackersAlive <= 0 && timerEnded)
+        if(AttackersAlive <= 0 && timerEnded && !isPlayerLost)
         {
-            StartCoroutine(HandleWindCondition());
+            StartCoroutine(HandleWinCondition());
         }
     }
 
@@ -62,6 +84,7 @@ public class LevelController : MonoBehaviour
 
         StopSpawners();
     }
+
 
     private void StopSpawners()
     {
@@ -74,7 +97,7 @@ public class LevelController : MonoBehaviour
     }
 
 
-    IEnumerator HandleWindCondition()
+    IEnumerator HandleWinCondition()
     {
 
         winLabel.SetActive(true);
@@ -83,6 +106,7 @@ public class LevelController : MonoBehaviour
 
         yield return new WaitForSeconds(waitToLoad);
 
-        FindObjectOfType<SceneLoader>().LoadNextScreen();
+        FindObjectOfType<SceneLoader>().LoadNextScene();
     }
+
 }
