@@ -1,4 +1,4 @@
-<p align = "center" >  Space Marine </p>
+<p align = "center" >  Glitch Garden</p>
 
 <p> 
     <img src = "https://raw.githubusercontent.com/Shimshon21/Unity-Course-Games/main/Glitch%20Garden/Glitch%20Garden%20Fottage%202.PNG" />  
