@@ -10,13 +10,15 @@ public class PlayerMomvents : MonoBehaviour
     //Const
     const string IS_RUNNING_TRANSMISSION = "IsRunning";
     const string IS_JUMPING_TRANSMISSION = "IsJumping";
+    const string IS_FALLING_TRANSMISSION = "IsFalling";
 
     const string GROUND_LAYER = "Ground";
 
 
     Vector2 moveInput;
     Rigidbody2D m_rigidbody2D;
-    CapsuleCollider2D m_capsuleCollider2D;
+    CapsuleCollider2D m_bodyCollider;
+    BoxCollider2D m_feetCollider;
 
     // Movemnts Config
     [SerializeField] float runSpeed;
@@ -37,7 +39,8 @@ public class PlayerMomvents : MonoBehaviour
     {
         m_rigidbody2D = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        m_capsuleCollider2D = GetComponent<CapsuleCollider2D>();
+        m_bodyCollider = GetComponent<CapsuleCollider2D>();
+        m_feetCollider = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -45,6 +48,8 @@ public class PlayerMomvents : MonoBehaviour
     {
             Run();
             FlipSide();
+
+
     }
 
     void OnMove(InputValue value)
@@ -56,7 +61,7 @@ public class PlayerMomvents : MonoBehaviour
 
     void OnJump(InputValue value)
     {
-        if (!m_capsuleCollider2D.IsTouchingLayers(LayerMask.GetMask(GROUND_LAYER)))
+        if (IsFalling())
             return;
 
         if(value.isPressed)
@@ -67,6 +72,7 @@ public class PlayerMomvents : MonoBehaviour
 
             animator.SetBool(IS_JUMPING_TRANSMISSION, true);
         }
+
 
     }
 
@@ -82,9 +88,33 @@ public class PlayerMomvents : MonoBehaviour
 
         if(m_rigidbody2D.velocity.y == 0)
             animator.SetBool(IS_JUMPING_TRANSMISSION, false);
+
+       // HandleFall();
+       
+
+
         
+            
+
     }
 
+    private void HandleFall()
+    {
+        if (IsFalling())
+        {
+            animator.SetBool(IS_RUNNING_TRANSMISSION, false);
+            animator.SetBool(IS_FALLING_TRANSMISSION, true);
+        }
+        else
+        {
+            animator.SetBool(IS_FALLING_TRANSMISSION, false);
+        }
+    }
+
+    private bool IsFalling()
+    {
+        return !m_bodyCollider.IsTouchingLayers(LayerMask.GetMask(GROUND_LAYER));
+    }
 
     void FlipSide()
     {
