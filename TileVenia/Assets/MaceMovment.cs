@@ -7,7 +7,7 @@ public class MaceMovment : MonoBehaviour
     [SerializeField] float moveSpeedX;
     [SerializeField] float moveSpeedY;
     int sign = 1;
-    [SerializeField] float time = 0;
+    [SerializeField]float time = 0;
     [SerializeField] float timeChange;
 
     float maxYPos;
@@ -28,16 +28,15 @@ public class MaceMovment : MonoBehaviour
     {
         if (time >= timeChange)
         {
-            //GetComponent<Rigidbody2D>().velocity = ;
-            transform.Translate(new Vector2(0.01f, 0));
+            GetComponent<Rigidbody2D>().velocity = new Vector2(6,0);
 
-            //time = 0;
+            time = 0;
         }
 
-        if(transform.position.y == maxYPos)
+       /* if(transform.position.y == maxYPos)
         {
             sign *= -1;
-        }
+        }*/
 
         time += Time.deltaTime;
     }
