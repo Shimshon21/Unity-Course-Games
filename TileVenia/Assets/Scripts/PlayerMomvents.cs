@@ -48,8 +48,6 @@ public class PlayerMomvents : MonoBehaviour
     {
             Run();
             FlipSide();
-
-
     }
 
     void OnMove(InputValue value)
@@ -64,8 +62,10 @@ public class PlayerMomvents : MonoBehaviour
         if (IsFalling())
             return;
 
-        if(value.isPressed)
+        Debug.Log("Jump");
+        if (value.isPressed)
         {
+
             m_rigidbody2D.velocity += new Vector2(0f, jumpSpeed);
 
             animator.SetBool(IS_RUNNING_TRANSMISSION, false);
@@ -83,19 +83,15 @@ public class PlayerMomvents : MonoBehaviour
 
         bool playerHasHorizontalSpeed = Mathf.Abs(m_rigidbody2D.velocity.x) > Mathf.Epsilon;
 
+        // Set run anumation when player not jumping
         if(!animator.GetBool(IS_JUMPING_TRANSMISSION))
             animator.SetBool(IS_RUNNING_TRANSMISSION, playerHasHorizontalSpeed);
-
+        
+        // Set idle anime when player not jump.
         if(m_rigidbody2D.velocity.y == 0)
             animator.SetBool(IS_JUMPING_TRANSMISSION, false);
 
        // HandleFall();
-       
-
-
-        
-            
-
     }
 
     private void HandleFall()
