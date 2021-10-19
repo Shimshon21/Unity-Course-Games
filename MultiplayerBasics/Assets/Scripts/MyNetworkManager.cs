@@ -20,7 +20,13 @@ public class MyNetworkManager : NetworkManager
     {
         base.OnServerAddPlayer(conn);
 
+        MyNetworkPlayer player = conn.identity.GetComponent<MyNetworkPlayer>();
+
         numPlayers++;
+
+        player.SetDisplayName($"Player{numPlayers}");
+
+        player.SetRandomColor(Random.ColorHSV());
 
         Debug.Log("Player have been added, overall num of player: " + numPlayers);
     }
