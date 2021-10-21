@@ -26,7 +26,7 @@ public class MyNetworkManager : NetworkManager
 
         player.SetDisplayName($"Player{numPlayers}");
 
-        player.SetRandomColor(Random.ColorHSV());
+        player.SetDisplayColor(Random.ColorHSV());
 
         Debug.Log("Player have been added, overall num of player: " + numPlayers);
     }
