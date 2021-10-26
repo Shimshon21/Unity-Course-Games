@@ -15,6 +15,7 @@ public class MyNetworkPlayer : NetworkBehaviour
     [SerializeField] private TMP_Text displayNameText = null;
     [SerializeField] private Renderer displayColorRenderer;
 
+    # region Server
     // Warns the client to access to that function.
     [Server]
     public void SetDisplayName(string newDisplayName)
@@ -23,11 +24,33 @@ public class MyNetworkPlayer : NetworkBehaviour
     }
    
 
-    public void SetRandomColor(Color colorVal)
+    public void SetDisplayColor(Color newDisplaycolor)
     {
-        color = colorVal;
+        color = newDisplaycolor;
     }
 
+
+    // Command the server to runt this function.
+    [Command]
+    private void CmdSetDisplayName(string newDisplayName)
+    {
+
+        if (newDisplayName.Length > 5)
+        {
+
+            RpcLogNewName(newDisplayName);
+
+            SetDisplayName(newDisplayName);
+        }
+        else
+        {
+            Debug.LogError("Error Name Is Too Short!");
+        }
+    }
+
+    #endregion
+
+    #region Client
     private void HandleDisplayColorUpdated(Color oldColor,Color newColor)
     {
         displayColorRenderer.material.SetColor("_Color", newColor);
@@ -39,6 +62,24 @@ public class MyNetworkPlayer : NetworkBehaviour
     {
         displayNameText.text = newName;
     }
+
+    [ContextMenu("Set My Name")]
+    private void SetMyName()
+    {
+        CmdSetDisplayName("My");
+    }
+
+
+
+    //Say all client to run this code
+    [ClientRpc]
+    private void RpcLogNewName(string newName)
+    {
+        Debug.Log(newName);
+    }
+
+    #endregion
+
 }
 
 
