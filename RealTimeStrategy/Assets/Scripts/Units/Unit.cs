@@ -9,7 +9,12 @@ using System;
 // 
 public class Unit : NetworkBehaviour
 {
+    [SerializeField] private Health health;
+   
+
     [SerializeField] private UnitMovement unitMovement = null;
+    [SerializeField] private Targeter targeter;
+
     [SerializeField] private UnityEvent onSelected = null;
     [SerializeField] private UnityEvent onDeselected = null;
 
@@ -30,27 +35,43 @@ public class Unit : NetworkBehaviour
         return unitMovement;
     }
 
+    public Targeter GetTargeter()
+    {
+        return targeter;
+    }
+
     #region Server
     public override void OnStartServer()
     {
+        health.ServerOnDie += ServerHandleDie;
 
         ServerOnUnitSpawned?.Invoke(this);
+
     }
 
 
     public override void OnStopServer()
     {
+        health.ServerOnDie -= ServerHandleDie;
+
         ServerOnUnitDeSpawned?.Invoke(this);
+
     }
 
+
+    [Server]
+    private void ServerHandleDie()
+    {
+        NetworkServer.Destroy(gameObject);
+    }
     #endregion
 
     #region Client
 
 
-    public override void OnStartClient()
+    public override void OnStartAuthority()
     {
-        if (!isClientOnly || !hasAuthority) { return; }
+        if (!hasAuthority) { return; }
         AuthortyOnUnitSpawned?.Invoke(this);
     }
 
