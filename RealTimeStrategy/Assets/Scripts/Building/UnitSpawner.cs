@@ -3,13 +3,33 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class UnitSpawner : NetworkBehaviour, IPointerClickHandler,IPointerDownHandler,IPointerUpHandler
 {
+    [SerializeField] private Health health = null;
     [SerializeField] private GameObject unitPrefab = null;
     [SerializeField] private Transform spawnPoint = null;
 
     #region Server
+
+
+    public override void OnStartServer()
+    {
+        health.ServerOnDie += ServerHandleDie;
+    }
+
+    public override void OnStopServer()
+    {
+        health.ServerOnDie -= ServerHandleDie;
+    }
+
+
+    [Server]
+    private void ServerHandleDie()
+    {
+        //NetworkServer.Destroy(gameObject);
+    }
 
 
     // Command on server to spawn a unit.
@@ -32,16 +52,16 @@ public class UnitSpawner : NetworkBehaviour, IPointerClickHandler,IPointerDownHa
     // Call this function on each time we click on the current object.
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("Clcicked Unit Spawner");
+
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("Clcicked Unit Spawner");
+
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Clcicked Unit Spawner");
+
 
         // Check if left button clicked.
         if (eventData.button != PointerEventData.InputButton.Left) { return; }

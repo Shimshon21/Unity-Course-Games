@@ -6,21 +6,30 @@ using UnityEngine.Events;
 using System;
 
 // A specific unit class with attributes of selection
-// 
 public class Unit : NetworkBehaviour
 {
+
+    [SerializeField] private Health health;
+   
+
     [SerializeField] private UnitMovement unitMovement = null;
+    [SerializeField] private Targeter targeter;
+
     [SerializeField] private UnityEvent onSelected = null;
     [SerializeField] private UnityEvent onDeselected = null;
 
     // Server
-    public static event Action<Unit> ServerOnUnitSpawned;
 
+    // Server Unit spawned event.
+    public static event Action<Unit> ServerOnUnitSpawned;
+    // Server Unit Despawned event.
     public static event Action<Unit> ServerOnUnitDeSpawned;
 
-    //Client
-    public static event Action<Unit> AuthortyOnUnitSpawned;
+    // Authorty
 
+    // Authorty Unit spawned event. 
+    public static event Action<Unit> AuthortyOnUnitSpawned;
+    // Authorty Unit despawned event. 
     public static event Action<Unit> AuthortyOnUnitDeSpawned;
 
 
@@ -30,31 +39,53 @@ public class Unit : NetworkBehaviour
         return unitMovement;
     }
 
+
+    public Targeter GetTargeter()
+    {
+        return targeter;
+    }
     #region Server
+
+
+    // Subscribe to event of the unit die
+    // and invoke when spawned event.
     public override void OnStartServer()
     {
+        health.ServerOnDie += ServerHandleDie;
 
         ServerOnUnitSpawned?.Invoke(this);
+
     }
 
-
+    // Unsubscribe to event of the unit die
+    // and invoke when despawned event.
     public override void OnStopServer()
     {
+        health.ServerOnDie -= ServerHandleDie;
+
         ServerOnUnitDeSpawned?.Invoke(this);
+
     }
 
+
+    [Server]
+    private void ServerHandleDie()
+    {
+        NetworkServer.Destroy(gameObject);
+    }
     #endregion
 
     #region Client
 
 
-    public override void OnStartClient()
+    // Authority invoke unit spawned event.
+    public override void OnStartAuthority()
     {
-        if (!isClientOnly || !hasAuthority) { return; }
+        if (!hasAuthority) { return; }
         AuthortyOnUnitSpawned?.Invoke(this);
     }
 
-    
+    // Client invoke unit despawned event.
     public override void OnStopClient()
     {
         if (!isClientOnly || !hasAuthority) { return; }
