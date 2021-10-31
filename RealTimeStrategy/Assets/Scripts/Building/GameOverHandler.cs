@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class GameOverHandler : NetworkBehaviour
 {
+    public static event Action ServerOnGameOver;
+
+    public static event Action<string> ClientOnGameOver;
+
     [SerializeField] private List<UnitBase> bases;
 
 
@@ -25,6 +30,7 @@ public class GameOverHandler : NetworkBehaviour
 
     private void ServerHandleBaseSpawned(UnitBase unitBase)
     {
+        Debug.Log("Base Added ");
         bases.Add(unitBase);
 
     }
@@ -36,11 +42,23 @@ public class GameOverHandler : NetworkBehaviour
 
         if(bases.Count != 1) { return; }
 
-        Debug.Log("Game Over!");
+        int playerId = bases[0].connectionToClient.connectionId;
+
+        RpcGameOver($"Player {playerId}");
+
+        ServerOnGameOver?.Invoke();
     }
     #endregion
 
 
     #region Client
+
+    // Notify all players the game is over.
+    [ClientRpc]
+    private void RpcGameOver(string winner)
+    {
+        ClientOnGameOver?.Invoke(winner);
+    }
+
     #endregion
 }

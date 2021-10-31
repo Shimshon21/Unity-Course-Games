@@ -276,13 +276,25 @@ PrefabInstance:
       value: Assets/Scenes/Menu_Scene.unity
       objectReference: {fileID: 0}
     - target: {fileID: 6304622419625913447, guid: a5bfb760fc41f3146be9220edfee3ce4, type: 3}
+      propertyPath: unitSpawnerPrefab
+      value: 
+      objectReference: {fileID: 8363844673654585255, guid: 43d89760328a530419730ba11db01b01, type: 3}
+    - target: {fileID: 6304622419625913447, guid: a5bfb760fc41f3146be9220edfee3ce4, type: 3}
+      propertyPath: gameOverHandlerPrefab
+      value: 
+      objectReference: {fileID: 869256152450696360, guid: 5b0838e5bdf74ad448ec6d712ac84ac4, type: 3}
+    - target: {fileID: 6304622419625913447, guid: a5bfb760fc41f3146be9220edfee3ce4, type: 3}
       propertyPath: spawnPrefabs.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6304622419625913447, guid: a5bfb760fc41f3146be9220edfee3ce4, type: 3}
       propertyPath: spawnPrefabs.Array.data[2]
       value: 
       objectReference: {fileID: 6174252005838804790, guid: b99e8ccb2f2d71a4a868b63f115d4009, type: 3}
+    - target: {fileID: 6304622419625913447, guid: a5bfb760fc41f3146be9220edfee3ce4, type: 3}
+      propertyPath: spawnPrefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 2115192308945591727, guid: 5b0838e5bdf74ad448ec6d712ac84ac4, type: 3}
     - target: {fileID: 6304622419625913450, guid: a5bfb760fc41f3146be9220edfee3ce4, type: 3}
       propertyPath: m_Name
       value: NetworkManager

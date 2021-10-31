@@ -52,16 +52,16 @@ public class UnitSpawner : NetworkBehaviour, IPointerClickHandler,IPointerDownHa
     // Call this function on each time we click on the current object.
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("Clcicked Unit Spawner");
+
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("Clcicked Unit Spawner");
+
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Clcicked Unit Spawner");
+
 
         // Check if left button clicked.
         if (eventData.button != PointerEventData.InputButton.Left) { return; }

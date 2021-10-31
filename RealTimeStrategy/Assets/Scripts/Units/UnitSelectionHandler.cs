@@ -29,14 +29,17 @@ public class UnitSelectionHandler : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        player = NetworkClient.connection.identity.GetComponent<RTSPlayer>();
-
         Unit.AuthortyOnUnitDeSpawned += AuthorityHandleUnitDespawned;
+
+        GameOverHandler.ClientOnGameOver += ClientHandleGameOver;
+
     }
 
     private void OnDestroy()
     {
         Unit.AuthortyOnUnitDeSpawned -= AuthorityHandleUnitDespawned;
+
+        GameOverHandler.ClientOnGameOver -= ClientHandleGameOver;
     }
 
 
@@ -164,6 +167,13 @@ public class UnitSelectionHandler : MonoBehaviour
     private void AuthorityHandleUnitDespawned(Unit unit)
     {
         SelectedUnits.Remove(unit);
+    }
+
+    private void ClientHandleGameOver(string winnerName)
+    {
+
+        // MonoBehaviour member from stopping calls for the update function. 
+        enabled = false;
     }
 }
 

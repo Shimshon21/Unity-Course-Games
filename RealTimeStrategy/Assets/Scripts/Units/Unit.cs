@@ -6,9 +6,9 @@ using UnityEngine.Events;
 using System;
 
 // A specific unit class with attributes of selection
-// 
 public class Unit : NetworkBehaviour
 {
+
     [SerializeField] private Health health;
    
 
@@ -19,13 +19,17 @@ public class Unit : NetworkBehaviour
     [SerializeField] private UnityEvent onDeselected = null;
 
     // Server
-    public static event Action<Unit> ServerOnUnitSpawned;
 
+    // Server Unit spawned event.
+    public static event Action<Unit> ServerOnUnitSpawned;
+    // Server Unit Despawned event.
     public static event Action<Unit> ServerOnUnitDeSpawned;
 
-    //Client
-    public static event Action<Unit> AuthortyOnUnitSpawned;
+    // Authorty
 
+    // Authorty Unit spawned event. 
+    public static event Action<Unit> AuthortyOnUnitSpawned;
+    // Authorty Unit despawned event. 
     public static event Action<Unit> AuthortyOnUnitDeSpawned;
 
 
@@ -35,12 +39,16 @@ public class Unit : NetworkBehaviour
         return unitMovement;
     }
 
+
     public Targeter GetTargeter()
     {
         return targeter;
     }
-
     #region Server
+
+
+    // Subscribe to event of the unit die
+    // and invoke when spawned event.
     public override void OnStartServer()
     {
         health.ServerOnDie += ServerHandleDie;
@@ -49,7 +57,8 @@ public class Unit : NetworkBehaviour
 
     }
 
-
+    // Unsubscribe to event of the unit die
+    // and invoke when despawned event.
     public override void OnStopServer()
     {
         health.ServerOnDie -= ServerHandleDie;
@@ -69,13 +78,14 @@ public class Unit : NetworkBehaviour
     #region Client
 
 
+    // Authority invoke unit spawned event.
     public override void OnStartAuthority()
     {
         if (!hasAuthority) { return; }
         AuthortyOnUnitSpawned?.Invoke(this);
     }
 
-    
+    // Client invoke unit despawned event.
     public override void OnStopClient()
     {
         if (!isClientOnly || !hasAuthority) { return; }

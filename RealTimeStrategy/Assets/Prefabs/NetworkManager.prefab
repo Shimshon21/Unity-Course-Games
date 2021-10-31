@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6304622419625913450}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.005696, y: -0.69709086, z: -1.1657538}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -111,8 +111,11 @@ MonoBehaviour:
   playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 8773724168482268416, guid: 9f4fff391ddd12d4cb0b879b28b84449, type: 3}
-  - {fileID: 2969367452855138414, guid: aacfa2c8f8bd7cd43bc62714165aafbf, type: 3}
-  unitSpawnerPrefab: {fileID: 2969367452855138414, guid: aacfa2c8f8bd7cd43bc62714165aafbf, type: 3}
+  - {fileID: 8363844673654585255, guid: 2c98b087f5d42ff4fa1488b3fba5e896, type: 3}
+  - {fileID: 2115192308945591727, guid: 5b0838e5bdf74ad448ec6d712ac84ac4, type: 3}
+  - {fileID: 6174252005838804790, guid: b99e8ccb2f2d71a4a868b63f115d4009, type: 3}
+  unitSpawnerPrefab: {fileID: 8363844673654585255, guid: 2c98b087f5d42ff4fa1488b3fba5e896, type: 3}
+  gameOverHandlerPrefab: {fileID: 869256152450696360, guid: 5b0838e5bdf74ad448ec6d712ac84ac4, type: 3}
 --- !u!114 &6304622419625913445
 MonoBehaviour:
   m_ObjectHideFlags: 0
