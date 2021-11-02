@@ -22,6 +22,8 @@ public class BuildingButton : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
 
     // Camera for using ray casting.
     private Camera mainCamera;
+    // The Building collider.
+    private BoxCollider buildingCollider;
     // Note the player for a new building if he has enough sum.
     private RTSPlayer player;
     // Preview Of the visual building we want to put.
@@ -38,6 +40,8 @@ public class BuildingButton : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
         iconImage.sprite = building.GetIcon();
 
         priveText.text = building.GetPrice().ToString();
+
+        buildingCollider = building.GetComponent<BoxCollider>();
     }
 
 
@@ -56,6 +60,8 @@ public class BuildingButton : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
     public void OnPointerDown(PointerEventData eventData)
     {
         if(eventData.button != PointerEventData.InputButton.Left) { return; }
+
+        if(player.GetResources() < building.GetPrice()) { return; }
 
         buildingPreviewInstance = Instantiate(building.GetBuildingPreview());
 
@@ -91,6 +97,10 @@ public class BuildingButton : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
         {
             buildingPreviewInstance.SetActive(true);
         }
+
+        Color color = player.CanPlaceBuilding(buildingCollider,hit.point) ? Color.green : Color.red;
+
+        buildingRenderInstance.material.SetColor("_BaseColor", color);
 
     }
 

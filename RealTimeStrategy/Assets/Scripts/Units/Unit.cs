@@ -10,6 +10,7 @@ public class Unit : NetworkBehaviour
 {
 
     [SerializeField] private Health health;
+    [SerializeField] private int resourceCost;
    
 
     [SerializeField] private UnitMovement unitMovement = null;
@@ -44,9 +45,14 @@ public class Unit : NetworkBehaviour
     {
         return targeter;
     }
+
+
+    public int GetResourceCost()
+    {
+        return resourceCost;
+    }
+
     #region Server
-
-
     // Subscribe to event of the unit die
     // and invoke when spawned event.
     public override void OnStartServer()
