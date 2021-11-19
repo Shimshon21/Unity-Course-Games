@@ -7,54 +7,127 @@ using Mirror;
 // In charge of the player actions.
 public class RTSPlayer:NetworkBehaviour
 {
-    [SerializeField] private LayerMask buildingBlockLayer = new LayerMask();
+    // Following camera of the player.
+    [SerializeField] private Transform cameraTransfornm = null;
 
+    // Layers we want to show the player.
+    [SerializeField] private LayerMask buildingBlockLayer = new LayerMask();
+    
+    // Builidngs player can instatiate in the game.
     [SerializeField] private Building[] buildings = new Building[0];
+    
+    // Distance range player can built from the base.
     [SerializeField] private float buildingRangeLimit = 5f;
 
-    [SerializeField][SyncVar(hook = nameof(ClientHandleResourcesUpdated))] private int resources = 500;
+    // The player resource.
+    [SerializeField][SyncVar(hook = nameof(ClientHandleResourcesUpdated))] 
+    private int resources = 500;
 
-    // Save all the units we have overall;
-    private List<Unit> myUnits = new List<Unit>();
+    [SyncVar(hook = nameof(AuthortyHandlePartyOwnerStateUpdated))] 
+    private bool isPartyOwner = false;
+
+    [SyncVar(hook = nameof(ClientHandleDisplayNameUpdated))]
+    private string displayName;
+
+    private Color teamColor = new Color();
+
+    [SerializeField] private List<Unit> myUnits = new List<Unit>();
 
     private List<Building> myBuildings = new List<Building>();
 
-    // Not static because it is relvent to specific client
+    // Resource value changed.
+    // (Not static because it is relvent to specific client)
     public event Action<int> ClientOnResourcesUpdated;
 
+    public static event Action ClientOnInfoUpdated;
+    public static event Action<bool> AuthortyOnPartyOwnerStateUpdated;
+
+    // Getters.
+    public string GetDisplayName(){return displayName;}
+
+    public bool GetIsPartyOwner(){return isPartyOwner;}
+
+    public Transform GetCameraTransform(){return cameraTransfornm;}
+
+    public Color GetTeamColor(){return teamColor;}
+
     // Get client/server units list
-    public List<Unit> GetMyUnits()
-    {
-        return myUnits;
-    }
+    public List<Unit> GetMyUnits(){return myUnits;}
 
+    public List<Building> GetMyBuildings(){return myBuildings;}
 
-    public List<Building> GetMyBuildings()
-    {
-        return myBuildings;
-    }
+    public int GetResources(){return resources;}
 
-
-    public int GetResources()
-    {
-        return resources;
-    }
+    // Setters
+    public void SetPartyOwner(bool state){isPartyOwner = state;}
 
     [Server]
-    public void SetResources(int newResources)
+    public void SetDisplayName(string displayName){this.displayName = displayName;}
+
+    [Server]
+    public void SetResources(int newResources){resources = newResources;}
+
+    [Server]
+    public void SetTeamColor(Color newTeamColor){teamColor = newTeamColor;}
+
+
+    // Command the server to start the game.
+    [Command]
+    public void CmdStartGame()
     {
-        resources = newResources;
+        if(!isPartyOwner) { return; }
+
+        ((RTSNetworkManager)NetworkManager.singleton).StartGame();
     }
 
+    // Command the server to put building if possible.
+    [Command]
+    public void CmdTryPlaceBuilding(int buildingId, Vector3 point)
+    {
+        Building buildingToPlace = getBuilidingById(buildingId);
 
+        // Id is not existed.
+        if (!buildingToPlace) return; 
+
+        // Not enough resources.
+        if (resources < buildingToPlace.GetPrice()) return; 
+
+        BoxCollider buildingCollider = buildingToPlace.GetComponent<BoxCollider>();
+        
+        //
+        if (!CanPlaceBuilding(buildingCollider, point))  return; 
+
+        GameObject buildingInstance = Instantiate(buildingToPlace.gameObject, point, buildingToPlace.transform.rotation);
+
+        NetworkServer.Spawn(buildingInstance, connectionToClient);
+
+        SetResources(resources - buildingToPlace.GetPrice());
+    }
+
+    // Return the wanted building by given Id.
+    private Building getBuilidingById(int buildingId)
+    {
+        // Set the building the id is match to.
+        foreach (Building building in buildings)
+        {
+            if (buildingId == building.GetId())
+                return building;
+        }
+        return null;
+    }
+
+    // Check if we allowed to put the wanted building.
     public bool CanPlaceBuilding(BoxCollider buildingCollider, Vector3 point)
     {
+
+        // Check if we collide existed object collider.
         if (Physics.CheckBox(point + buildingCollider.center, buildingCollider.size / 2, Quaternion.identity, buildingBlockLayer))
         {
             return false;
         }
 
-        foreach (Building building in buildings)
+        // Check building around existed building area.
+        foreach (Building building in myBuildings)
         {
             if ((point - building.transform.position).sqrMagnitude
                 <= buildingRangeLimit * buildingRangeLimit)
@@ -68,22 +141,23 @@ public class RTSPlayer:NetworkBehaviour
 
     #region Server
 
-
     public override void OnStartServer()
     {
-        // Subscribe to unit
+        // Subscribe to Unit
         Unit.ServerOnUnitSpawned += ServerHandleUnitSpawned;
         Unit.ServerOnUnitDeSpawned += ServerHandleUnitDeSpawned;
 
-        // Subscribe to building
+        // Subscribe to Building
         Building.ServerOnBuildingSpawned += ServerHandleBuildingSpawn;
         Building.ServerOnBuildingDeSpawned += ServerHandleBuildingDeSpawn;
+
+        // Dont delete player between scenes switch.
+        DontDestroyOnLoad(gameObject);
     }
 
 
     public override void OnStopServer()
     {
-        // Unsubscribe to building
         Unit.ServerOnUnitSpawned -= ServerHandleUnitSpawned;
         Unit.ServerOnUnitDeSpawned -= ServerHandleUnitDeSpawned;
 
@@ -92,68 +166,47 @@ public class RTSPlayer:NetworkBehaviour
     }
 
 
-    // Add new unit to the server 'units' list.
+    // Add new unit to the server 'myUnits' list.
     private void ServerHandleUnitSpawned(Unit unit)
     {
-        if (unit.connectionToClient.connectionId != connectionToClient.connectionId) { return; }
-
-        myUnits.Add(unit);
+        if (isUnitBelongToClient(unit))
+            myUnits.Add(unit);
     }
 
 
-    // Remove unit from the server 'units' list
+    // Remove unit from the server 'myUnits' list
     private void ServerHandleUnitDeSpawned(Unit unit)
     {
-        if (unit.connectionToClient.connectionId != connectionToClient.connectionId) { return; }
-
-        myUnits.Remove(unit);
+        if (isUnitBelongToClient(unit))
+            myUnits.Remove(unit);
     }
 
 
     private void ServerHandleBuildingSpawn(Building building)
     {
-        if (building.connectionToClient.connectionId != connectionToClient.connectionId) { return; }
-
-        myBuildings.Add(building);
+        if (isBuildingBelongToClient(building))
+            myBuildings.Add(building);
     }
 
 
     private void ServerHandleBuildingDeSpawn(Building building)
     {
-        if (building.connectionToClient.connectionId != connectionToClient.connectionId) { return; }
-
-        myBuildings.Remove(building);
-    } 
-
-
-    [Command]
-    public void CmdTryPlaceBuilding(int buildingId,Vector3 point)
-    {
-        Building buildingToPlace = null;
-
-        foreach(Building building in buildings)
-        {
-            if(buildingId == building.GetId())
-            {
-                buildingToPlace = building;
-                break;
-            }
-        }
-
-        if (!buildingToPlace) { return; }
-
-        if( resources < buildingToPlace.GetPrice()) { return; }
-
-        BoxCollider buildingCollider = buildingToPlace.GetComponent<BoxCollider>();
-
-        if(!CanPlaceBuilding(buildingCollider,point)) { return; }
-
-        GameObject buildingInstance = Instantiate(buildingToPlace.gameObject, point, buildingToPlace.transform.rotation);
-
-        NetworkServer.Spawn(buildingInstance,connectionToClient);
-
-        SetResources(resources - buildingToPlace.GetPrice());
+        if (isBuildingBelongToClient(building))
+            myBuildings.Remove(building);
     }
+
+    private bool isUnitBelongToClient(Unit unit)
+    {
+        return unit.connectionToClient.connectionId ==
+            connectionToClient.connectionId;
+    }
+
+    private bool isBuildingBelongToClient(Building building)
+    {
+        return (building.connectionToClient.connectionId ==
+            connectionToClient.connectionId);
+    }
+   
     #endregion
 
 
@@ -172,11 +225,30 @@ public class RTSPlayer:NetworkBehaviour
 
     }
 
+    public override void OnStartClient()
+    {
+        if(NetworkServer.active) return;
+
+        // When we switch from menu to map scene,
+        // the object are destroyed unless we say
+        // otherwise.
+        DontDestroyOnLoad(gameObject);
+
+        ((RTSNetworkManager)NetworkManager.singleton).players.Add(this);
+
+    }
 
     // Unsubscribe client and client that is also a server(Authorty) to unit spawn event.
     public override void OnStopClient()
     {
+        ClientOnInfoUpdated?.Invoke();
+
         if (!isClientOnly) return;
+
+        ((RTSNetworkManager)NetworkManager.singleton).players.Remove(this);
+
+        if(!hasAuthority) return;
+
         Unit.AuthortyOnUnitSpawned -= AuthortyHandleUnitSpawned;
         Unit.AuthortyOnUnitDeSpawned -= AuthortyHandleUnitDeSpawned;
 
@@ -184,11 +256,18 @@ public class RTSPlayer:NetworkBehaviour
         Building.AuthortyOnBuildingDeSpawned -= AuthortyHandleBuildingDeSpawn;
     }
 
+    private void AuthortyHandlePartyOwnerStateUpdated(bool oldState, bool newState)
+    {
+        if (!hasAuthority) { return; }
+
+        AuthortyOnPartyOwnerStateUpdated?.Invoke(newState);
+    }
+
     // Add unit to authorty 'list'.
     private void AuthortyHandleUnitDeSpawned(Unit unit)
     {
         if (!hasAuthority) return;
-        myUnits.Add(unit);
+        myUnits.Remove(unit);
     }
 
 
@@ -196,7 +275,7 @@ public class RTSPlayer:NetworkBehaviour
     private void AuthortyHandleUnitSpawned(Unit unit)
     {
         if (!hasAuthority) return;
-        myUnits.Remove(unit);
+        myUnits.Add(unit);
     }
 
     private void AuthortyHandleBuildingSpawn(Building building)
@@ -217,8 +296,11 @@ public class RTSPlayer:NetworkBehaviour
         Debug.Log("Current Resource" + newResource);
         ClientOnResourcesUpdated?.Invoke(newResource);
     }
+
+    private void ClientHandleDisplayNameUpdated(string oldName,string newName)
+    {
+        ClientOnInfoUpdated?.Invoke();
+    }
     #endregion
-
-
 
 }

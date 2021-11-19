@@ -22,12 +22,14 @@ public class UnitSelectionHandler : MonoBehaviour
     private Camera mainCamera;
 
     // Selected unit list.
-    public HashSet<Unit> SelectedUnits { get; } = new HashSet<Unit>();
+    [SerializeField] public HashSet<Unit> SelectedUnits { get; } = new HashSet<Unit>();
 
 
     private void Start()
     {
         mainCamera = Camera.main;
+
+        player = NetworkClient.connection.identity.GetComponent<RTSPlayer>();
 
         Unit.AuthortyOnUnitDeSpawned += AuthorityHandleUnitDespawned;
 
@@ -45,8 +47,6 @@ public class UnitSelectionHandler : MonoBehaviour
 
     private void Update()
     {
-        if(player == null)
-            player = NetworkClient.connection.identity.GetComponent<RTSPlayer>();
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
@@ -77,9 +77,12 @@ public class UnitSelectionHandler : MonoBehaviour
             SelectedUnits.Clear();
         }
 
+        // Intilize the rectangle  size.
+        unitSelectionArea.sizeDelta = new Vector2(Mathf.Abs(0), Mathf.Abs(0));
+
         unitSelectionArea.gameObject.SetActive(true);
 
-        mouseStartPosition = Mouse.current.position.ReadValue();
+        mouseStartPosition = Input.mousePosition;
     }
 
 
@@ -104,7 +107,7 @@ public class UnitSelectionHandler : MonoBehaviour
 
     private void ClearSelectionArea()
     {
-
+        unitSelectionArea.gameObject.SetActive(false);
         // Choose single unit.
         if (unitSelectionArea.sizeDelta.magnitude == 0)
         {
@@ -121,6 +124,7 @@ public class UnitSelectionHandler : MonoBehaviour
     // Select single unit which directly clciked on.
     private void SelectSingleUnit()
     {
+
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask)) return;
@@ -147,21 +151,27 @@ public class UnitSelectionHandler : MonoBehaviour
         Vector2 min = unitSelectionArea.anchoredPosition - (unitSelectionArea.sizeDelta / 2);
         Vector2 max = unitSelectionArea.anchoredPosition + (unitSelectionArea.sizeDelta / 2);
 
+
         foreach (Unit unit in player.GetMyUnits())
         {
+
+
             Vector3 screenPosition = mainCamera.WorldToScreenPoint(unit.transform.position);
+
+
 
             if (screenPosition.x > min.x &&
                 screenPosition.x < max.x &&
                 screenPosition.y > min.y &&
                 screenPosition.y < max.y)
             {
+                Debug.Log("Unit Id"+unit.GetInstanceID());
+
                 SelectedUnits.Add(unit);
                 unit.Select();
             }
         }
 
-        unitSelectionArea.gameObject.SetActive(false);
     }
 
     private void AuthorityHandleUnitDespawned(Unit unit)

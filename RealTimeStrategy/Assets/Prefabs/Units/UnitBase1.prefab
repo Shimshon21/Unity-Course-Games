@@ -57,8 +57,13 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   health: {fileID: 288648783713661060}
-  unitPrefab: {fileID: 8773724168482268416, guid: 9f4fff391ddd12d4cb0b879b28b84449, type: 3}
+  unitPrefab: {fileID: 0}
   spawnPoint: {fileID: 9118076725454020855}
+  remainingUnitsText: {fileID: 0}
+  unitProgressImage: {fileID: 0}
+  maxUnitQueue: 5
+  spawnMoveRange: 7
+  unitSpawnDuration: 5
 --- !u!114 &5427299316250975461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -264,7 +269,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1e32e9d4cf4837146a1b3036da9953db, type: 2}
+  - {fileID: 2100000, guid: 114f14af44f5ef04797b4d65166b18a3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

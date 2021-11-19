@@ -38,6 +38,8 @@ public class UnitCommandGiver : MonoBehaviour
 
         if (hit.collider.TryGetComponent<Targetable>(out Targetable targetable))
         {
+
+            Debug.Log("Target was given is" + targetable);
             if (targetable.hasAuthority)
             {
                 TryToMove(hit.point);
@@ -67,6 +69,8 @@ public class UnitCommandGiver : MonoBehaviour
     // Set new target for all units selected.
     private void TryTarget(Targetable target)
     {
+        Debug.Log("given target" + target);
+
         foreach(Unit unit in unitSelectionHandler.SelectedUnits)
         {
             unit.GetTargeter().CmdSetTarget(target.gameObject);

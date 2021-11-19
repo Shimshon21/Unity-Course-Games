@@ -24,6 +24,7 @@ public class Building : NetworkBehaviour
     // Authorty Unit despawned event. 
     public static event Action<Building> AuthortyOnBuildingDeSpawned;
 
+    #region Getters
     public GameObject GetBuildingPreview()
     {
         return buildingPreview;
@@ -39,11 +40,12 @@ public class Building : NetworkBehaviour
         return id;
     }
 
-
     public int GetPrice()
     {
         return price;
     }
+
+    #endregion
 
     #region Server
 

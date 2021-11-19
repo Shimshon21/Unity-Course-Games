@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 6304622419625913441}
   - component: {fileID: 6304622419625913444}
   - component: {fileID: 6304622419625913447}
-  - component: {fileID: 6304622419625913445}
+  - component: {fileID: 644205465132443814}
+  - component: {fileID: 4227736362359513870}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -65,7 +66,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6304622419625913450}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
   m_Name: 
@@ -100,9 +101,9 @@ MonoBehaviour:
   runInBackground: 1
   autoStartServerBuild: 1
   serverTickRate: 30
-  offlineScene: 
+  offlineScene: Assets/Scenes/Menu_Scene.unity
   onlineScene: 
-  transport: {fileID: 6304622419625913444}
+  transport: {fileID: 644205465132443814}
   networkAddress: localhost
   maxConnections: 100
   authenticator: {fileID: 0}
@@ -110,14 +111,15 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 1
   spawnPrefabs:
-  - {fileID: 8773724168482268416, guid: 9f4fff391ddd12d4cb0b879b28b84449, type: 3}
   - {fileID: 8363844673654585255, guid: 2c98b087f5d42ff4fa1488b3fba5e896, type: 3}
   - {fileID: 2115192308945591727, guid: 5b0838e5bdf74ad448ec6d712ac84ac4, type: 3}
-  - {fileID: 6174252005838804790, guid: b99e8ccb2f2d71a4a868b63f115d4009, type: 3}
   - {fileID: 8363844673654585255, guid: 2019bb47031dd6540bba38d4104e56fa, type: 3}
-  unitSpawnerPrefab: {fileID: 8363844673654585255, guid: 2c98b087f5d42ff4fa1488b3fba5e896, type: 3}
+  - {fileID: 8720668305986175051, guid: e801a1053a3e67c41a40c7d350fafa5f, type: 3}
+  - {fileID: 6593747486830279322, guid: 20b29e3bcbbc7934abcd50dc67643bfa, type: 3}
+  - {fileID: 1662013794626456616, guid: a309e9a3327e9634d8a35711ed1e7f6a, type: 3}
+  unitBasePrefab: {fileID: 8363844673654585255, guid: 2c98b087f5d42ff4fa1488b3fba5e896, type: 3}
   gameOverHandlerPrefab: {fileID: 869256152450696360, guid: 5b0838e5bdf74ad448ec6d712ac84ac4, type: 3}
---- !u!114 &6304622419625913445
+--- !u!114 &644205465132443814
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,8 +128,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 6304622419625913450}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
+  m_Script: {fileID: 11500000, guid: ea368fb6f27ec2f40a40e20977992b9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offsetX: 0
-  offsetY: 0
+  Channels: 0200000001000000
+  Timeout: 25
+  SteamAppID: 480
+  AllowSteamRelay: 1
+  UseNextGenSteamNetworking: 1
+  SteamUserID: 0
+--- !u!114 &4227736362359513870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304622419625913450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef4bffeda13d7a748973ff9204401c07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

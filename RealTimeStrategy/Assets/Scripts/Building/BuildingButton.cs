@@ -41,16 +41,14 @@ public class BuildingButton : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
 
         priveText.text = building.GetPrice().ToString();
 
+        player = NetworkClient.connection.identity.GetComponent<RTSPlayer>();
+
         buildingCollider = building.GetComponent<BoxCollider>();
     }
 
 
     void Update()
     {
-        if (player == null)
-        {
-            player = NetworkClient.connection.identity.GetComponent<RTSPlayer>();
-        }
 
         if (buildingPreviewInstance == null) { return; }
 
@@ -59,6 +57,7 @@ public class BuildingButton : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
+
         if(eventData.button != PointerEventData.InputButton.Left) { return; }
 
         if(player.GetResources() < building.GetPrice()) { return; }
