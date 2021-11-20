@@ -32,7 +32,6 @@ public class BuildingButton : MonoBehaviour,IPointerDownHandler,IPointerUpHandle
     private Renderer buildingRenderInstance;
 
 
-
     void Start()
     {
         mainCamera = Camera.main;

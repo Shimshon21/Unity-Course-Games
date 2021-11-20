@@ -41,8 +41,6 @@ public class UnitFiring : NetworkBehaviour
 
             laserFireTime = Time.time;
 
-            Debug.Log("Shooting At: " + targeter);
-
         }
 
 

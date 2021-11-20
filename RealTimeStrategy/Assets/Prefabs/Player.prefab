@@ -72,7 +72,8 @@ MonoBehaviour:
   buildings:
   - {fileID: 3902778881502697720, guid: e801a1053a3e67c41a40c7d350fafa5f, type: 3}
   - {fileID: 4268608991698120468, guid: 2019bb47031dd6540bba38d4104e56fa, type: 3}
-  buildingRangeLimit: 5
+  - {fileID: 4268608991698120468, guid: 1f538ccb208deec4b9763766971875ad, type: 3}
+  buildingRangeLimit: 10
   resources: 500
   myUnits: []
 --- !u!114 &9205491985592456806

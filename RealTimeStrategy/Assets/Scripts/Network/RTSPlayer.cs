@@ -42,7 +42,7 @@ public class RTSPlayer:NetworkBehaviour
     public static event Action ClientOnInfoUpdated;
     public static event Action<bool> AuthortyOnPartyOwnerStateUpdated;
 
-    // Getters.
+    #region Getters.
     public string GetDisplayName(){return displayName;}
 
     public bool GetIsPartyOwner(){return isPartyOwner;}
@@ -57,8 +57,9 @@ public class RTSPlayer:NetworkBehaviour
     public List<Building> GetMyBuildings(){return myBuildings;}
 
     public int GetResources(){return resources;}
+    #endregion
 
-    // Setters
+    #region Setters
     public void SetPartyOwner(bool state){isPartyOwner = state;}
 
     [Server]
@@ -69,7 +70,7 @@ public class RTSPlayer:NetworkBehaviour
 
     [Server]
     public void SetTeamColor(Color newTeamColor){teamColor = newTeamColor;}
-
+    #endregion
 
     // Command the server to start the game.
     [Command]
@@ -94,19 +95,21 @@ public class RTSPlayer:NetworkBehaviour
 
         BoxCollider buildingCollider = buildingToPlace.GetComponent<BoxCollider>();
         
-        //
         if (!CanPlaceBuilding(buildingCollider, point))  return; 
 
-        GameObject buildingInstance = Instantiate(buildingToPlace.gameObject, point, buildingToPlace.transform.rotation);
+        GameObject buildingInstance = Instantiate
+            (buildingToPlace.gameObject, point, buildingToPlace.transform.rotation);
 
         NetworkServer.Spawn(buildingInstance, connectionToClient);
 
+        //Update resource.
         SetResources(resources - buildingToPlace.GetPrice());
     }
 
     // Return the wanted building by given Id.
     private Building getBuilidingById(int buildingId)
     {
+        Debug.Log("Building" + buildingId);
         // Set the building the id is match to.
         foreach (Building building in buildings)
         {
@@ -119,7 +122,6 @@ public class RTSPlayer:NetworkBehaviour
     // Check if we allowed to put the wanted building.
     public bool CanPlaceBuilding(BoxCollider buildingCollider, Vector3 point)
     {
-
         // Check if we collide existed object collider.
         if (Physics.CheckBox(point + buildingCollider.center, buildingCollider.size / 2, Quaternion.identity, buildingBlockLayer))
         {

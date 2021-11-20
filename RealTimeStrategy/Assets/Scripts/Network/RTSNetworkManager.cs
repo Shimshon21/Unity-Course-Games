@@ -9,7 +9,6 @@ using System;
 // Manage the network system 
 public class RTSNetworkManager : NetworkManager
 {
-
     // The intial base in the start of the game.
     [SerializeField] private GameObject unitBasePrefab;
 
